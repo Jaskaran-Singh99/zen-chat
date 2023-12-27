@@ -4,17 +4,18 @@ const chats = require('./data/data')
 const dotenv = require('dotenv')
 const cors = require('cors')
 
+//Middelware
+
 dotenv.config()
 express.json()
 app.use(cors())
 
-
+//Routes
 app.get('/api/chat',(req, res)=>{
     res.send(chats)
 })
 
 app.get('/api/chat/:id',(req,res)=>{
-
     const singleChat = chats.find((i)=>i._id === req.params.id)
     console.log(singleChat)
 
