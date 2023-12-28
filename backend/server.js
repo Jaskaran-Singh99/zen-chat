@@ -3,9 +3,9 @@ const app = express()
 const chats = require('./data/data')
 const dotenv = require('dotenv')
 const cors = require('cors')
+const connectDb = require('./config/db')
 
 //Middelware
-
 dotenv.config()
 express.json()
 app.use(cors())
@@ -22,7 +22,16 @@ app.get('/api/chat/:id',(req,res)=>{
 })
 
 const PORT = process.env.PORT  || 4001
-console.log(PORT)
-app.listen(PORT,()=>{
-    console.log(`The server is listening to port ${PORT}...`)
-})
+
+const start = async ()=>{
+    try{
+        await connectDb()
+        app.listen(PORT,()=>{
+            console.log(`The server is listening to port ${PORT}...`)
+        })
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+start()
