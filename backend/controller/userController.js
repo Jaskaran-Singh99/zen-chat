@@ -39,10 +39,19 @@ const  loginUser = async (req, res)=>{
         throw Error('Email not found')
     }
     if(user.matchPassword(password)){
-        console.log(user)
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            pic: user.pic,
+            token: generateToken(user._id),
+          });
+      
     }
     else{
-        console.log('wrong password')
+        res.status(401)
+        throw new Error('Invalid email or password')
     }
 
 }

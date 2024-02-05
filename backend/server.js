@@ -11,15 +11,15 @@ const userRoutes = require('./routes/userRoutes')
 //Middelware
 dotenv.config()
 
-express.json()
+app.use(express.json())
 
 app.use(cors())
 app.use(express.json())
-// app.use(notFound)
+
 
 //Routes
 app.get('/', (req, res)=>{
-    res.json('The server is listening to port 4000')
+    res.json('The server is listening to port ' + PORT + "...")
 })
 app.use('/api/user', userRoutes)
 app.get('/api/user' ,userRoutes)
