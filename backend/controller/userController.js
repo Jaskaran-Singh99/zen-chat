@@ -56,5 +56,24 @@ const  loginUser = async (req, res)=>{
 
 }
 
+const getAllUsers = async(req, res)=>{
 
-module.exports =  {loginUser, registerUser}
+    const keyword = req.query.search 
+    ?{
+        $or:[
+            {name:{$regex:req.query.search, $options:"i"}},
+            {email:{$regex:req.query.search, $options:"i"}},
+            
+        ],
+    }
+    : {}
+    
+    const user =  await User.find(keyword).find({_id:{$ne:req.user}})
+    // res.send(req.bod)
+    console.log(req.user)
+    res.send(user)
+    // console.log(user)
+}
+
+
+module.exports =  {loginUser, registerUser, getAllUsers}
