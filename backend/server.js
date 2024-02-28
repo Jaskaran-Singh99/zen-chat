@@ -5,6 +5,7 @@ const dotenv = require('dotenv')
 const cors = require('cors')
 const connectDb = require('./config/db')
 const userRoutes = require('./routes/userRoutes')
+const chatRoutes = require('./routes/chatRoutes')
 // const { notFound } = require('./middleware/errorHandler')
 
 
@@ -21,11 +22,16 @@ app.use(express.json())
 app.get('/', (req, res)=>{
     res.json('The server is listening to port ' + PORT + "...")
 })
+
 app.use('/api/user', userRoutes)
-app.get('/api/user' ,userRoutes)
-app.get('/api/chat',(req, res)=>{
-    res.send(chats)
-})
+// app.get('/api/user' ,userRoutes)
+
+app.use('/api/chats', chatRoutes)
+
+
+// app.get('/api/chats',(req, res)=>{
+//     res.send(chats)
+// })
 
 app.get('/api/chat/:id',(req,res)=>{
     const singleChat = chats.find((i)=>i._id === req.params.id)

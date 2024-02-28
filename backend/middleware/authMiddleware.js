@@ -11,16 +11,12 @@ const protect = async (req, res, next)=>{
                         token = req.headers.authorization.split(" ")[1]
                         console.log(process.env.JWT_SECRET)
                 const decoded = jwt.verify(token, process.env.JWT_SECRET)
-                
-                console.log(decoded)
-
-                // req.user = await User.findById(decoded.id).select('-password')
+                req.user = await User.findById(decoded.id).select('-password')
                 
                 }
                 catch(err){
                         res.status(401)
                         console.log(err)
-                        // throw new Error('Not authorized token failed')
                 }
         }
 

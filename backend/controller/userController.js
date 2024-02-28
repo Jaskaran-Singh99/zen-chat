@@ -69,10 +69,10 @@ const getAllUsers = async(req, res)=>{
     : {}
     
     const user =  await User.find(keyword).find({_id:{$ne:req.user}})
-    // res.send(req.bod)
-    console.log(req.user)
+
+    
     res.send(user)
-    // console.log(user)
+  
 }
 
 
