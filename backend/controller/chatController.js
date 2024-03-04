@@ -102,7 +102,51 @@ const createGroupChat = asyncHandler(async (req, res)=>{
     catch(err){
       console.log(err)
     }
-  
 })
 
-module.exports = {fetchChats, createGroupChat, accessChat}
+const renameGroupChat = async(req, res)=>{
+  try{
+    var {chatId, chatName} = req.body
+    const updatedGroup = await Chat.findByIdAndUpdate(chatId, {chatName}, {new:true}).populate('users', '-password').populate('groupAdmin', '-password')
+    
+    if(!updatedGroup){
+      res.status(404)
+      throw new Error('Chat not provided')
+    }
+    else{
+      res.json(updatedGroup)
+    }
+
+  }
+  catch(err){
+    throw Error(err)
+  }
+}
+
+const addToGroup = async(req, res)=>{
+  const {chatId, userId}= req.body
+  const newGroup = await Chat.findByIdAndUpdate(chatId, {$push:{users: userId}}, {new:true}).populate('users', '-password').populate('groupAdmin', '-password')
+
+  if(!newGroup){
+    res.status(404)
+    throw new Error(' User not provided')
+  }
+  else{
+    res.json(newGroup)
+  }
+}
+
+const removeFromGroup = async(req, res)=>{
+  const {chatId, userId}= req.body
+  const removedGroup = await Chat.findByIdAndUpdate(chatId, {$pull:{users: userId}}, {new:true}).populate('users', '-password').populate('groupAdmin', '-password')
+
+  if(!removedGroup){
+    res.status(404)
+    throw new Error(' User not provided')
+  }
+  else{
+    res.json(removedGroup)
+  }
+
+}
+module.exports = {fetchChats, createGroupChat, accessChat, renameGroupChat, removeFromGroup, addToGroup}
