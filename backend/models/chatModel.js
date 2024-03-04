@@ -4,7 +4,7 @@ const chatSchema = new mongoose.Schema({
     chatName:{type:String, trim:true},
     groupChat:{default:false,type:Boolean},
     users:[{ref:'User', type:mongoose.Schema.Types.ObjectId}],
-    latestMessage:[{type:mongoose.Schema.Types.ObjectId, ref:'message'}],
+    latestMessage:[{type:mongoose.Schema.Types.ObjectId, ref:'Message'}],
     groupAdmin:[{ref:'User', type:mongoose.Schema.Types.ObjectId}]
     
 })

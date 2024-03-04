@@ -1,6 +1,9 @@
 const Chat = require('../models/chatModel')
 const User = require('../models/userModel')
+const Message = require('../models/messageModel')
 const asyncHandler = require('express-async-handler')
+
+
 
 const accessChat = asyncHandler(async (req, res) => {
     const { userId } = req.body;
@@ -19,6 +22,7 @@ const accessChat = asyncHandler(async (req, res) => {
     })
       .populate("users", "-password")
       .populate("latestMessage");
+      
   
     isChat = await User.populate(isChat, {
       path: "latestMessage.sender",
@@ -52,12 +56,53 @@ const accessChat = asyncHandler(async (req, res) => {
 
 const fetchChats = asyncHandler(async (req, res)=>{
   try{
-    const chat = await Chat.find({users:{$eq:req.user._id}})
-    res.send(chat)
+    Chat.find({users:{$eq:req.user._id}}).populate('users', '-password').
+    populate('groupAdmin', '-password').populate('latestMessage').sort({updatedAt:-1}).then(async (results)=>{
+      results = await User.populate(results, {
+        path:'latestMessage.sender',
+        select:'name pic email'
+      })
+      res.send(results)
+    })
+    // res.send(chat)
   }
   catch(err){
     res.send(err)
   }
 })
 
-module.exports = accessChat, fetchChats
+const createGroupChat = asyncHandler(async (req, res)=>{
+    try{
+      if(!req.body.users || !req.body.name){
+        return res.status(400).send({message:"Please Fill of the fields"})
+      }
+
+      var users = JSON.parse(req.body.users)
+      console.log(users)
+
+      if(users.length < 2){
+        return res.status(400).send('Please provide more than 2 users')
+      }
+
+      users.push(req.user)
+
+      const groupChat = await Chat.create({
+        users:users,
+        groupAdmin:req.user,
+        groupChat:true,
+        chatName:req.body.name
+      })
+      console.log(groupChat)
+
+      const fullGroupChat = await Chat.findOne({_id:groupChat._id}).populate('users', '-password').populate('groupAdmin', '-password')
+
+      res.status(200).json(fullGroupChat)
+
+    }
+    catch(err){
+      console.log(err)
+    }
+  
+})
+
+module.exports = {fetchChats, createGroupChat, accessChat}
