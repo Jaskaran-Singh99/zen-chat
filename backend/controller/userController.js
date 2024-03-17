@@ -27,7 +27,7 @@ const registerUser = async (req, res)=>{
         res.status(400).json('User not created')
 
     }
-    console.log(generateToken(user._id))
+    // console.log(generateToken(user._id))
 }
 
 
@@ -44,7 +44,7 @@ const  loginUser = async (req, res)=>{
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
-            pic: user.pic,
+            pic: user.picture,
             token: generateToken(user._id),
           });
       
